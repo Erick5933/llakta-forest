@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación en Mapa SVG - ECharts</title>
+			<link rel="icon" href="/imagenes/logollakta.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.2/dist/echarts.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="main" style="width: 100%; height: 600px;"></div>
+
+    <script>
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // Obtener el archivo SVG del mapa (usando tu ruta específica para el mapa)
+        $.get('/ec.svg', function (svg) {
+            // Registrar el mapa SVG
+            echarts.registerMap('ecuador_svg', { svg: svg });
+
+            var option = {
+                tooltip: {
+                    trigger: 'item', // Define que el tooltip se activará al pasar sobre un item
+                    formatter: function (params) {
+                        return params.data.tooltipText || 'Sin mensaje'; // Mostrará un mensaje en función de los datos
+                    }
+                },
+                geo: {
+                    map: 'ecuador_svg',  // Usamos el mapa SVG
+                    roam: true,  // Permite mover y hacer zoom en el mapa
+                    itemStyle: {
+                        areaColor: '#7BBF4A',  // Color verde para el fondo del mapa
+                        borderColor: '#ffffff',  // Color blanco para el borde de las provincias
+                        borderWidth: 1  // Grosor del borde
+                    },
+                    tooltip: {
+                        show: true
+                    }
+                },
+                series: {
+                    type: 'custom',
+                    coordinateSystem: 'geo',
+                    geoIndex: 0,
+                    zlevel: 1,
+                    data: [
+                        {name: 'Cuenca', value: [740.5, 273.7], tooltipText: 'Ubicación de Cuenca'},
+                        {name: 'Manabi', value: [699.7, 132], tooltipText: 'Ubicación de Girón'}
+                    ],
+                    renderItem: function (params, api) {
+                        const coord = api.coord([api.value(0, params.dataIndex), api.value(1, params.dataIndex)]);
+
+                        const circles = [];
+                        for (let i = 0; i < 5; i++) {
+                            circles.push({
+                                type: 'circle',
+                                shape: {
+                                    cx: 0,
+                                    cy: 0,
+                                    r: 30
+                                },
+                                style: {
+                                    stroke: 'red',
+                                    fill: 'none',
+                                    lineWidth: 2
+                                },
+                                keyframeAnimation: {
+                                    duration: 4000,
+                                    loop: true,
+                                    delay: (-i / 4) * 4000,
+                                    keyframes: [
+                                        {
+                                            percent: 0,
+                                            scaleX: 0,
+                                            scaleY: 0,
+                                            style: {
+                                                opacity: 1
+                                            }
+                                        },
+                                        {
+                                            percent: 1,
+                                            scaleX: 1,
+                                            scaleY: 1,
+                                            style: {
+                                                opacity: 0
+                                            }
+                                        }
+                                    ]
+                                }
+                            });
+                        }
+
+                        // La flecha, que apunta hacia la ubicación
+                        const arrow = {
+                            type: 'path',
+                            shape: {
+                                d: 'M16 0c-5.523 0-10 4.477-10 10 0 10 10 22 10 22s10-12 10-22c0-5.523-4.477-10-10-10zM16 16c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z',
+                                x: -10,
+                                y: -35,
+                                width: 20,
+                                height: 40
+                            },
+                            style: {
+                                fill: 'red'
+                            },
+                            keyframeAnimation: {
+                                duration: 1000,
+                                loop: true,
+                                delay: Math.random() * 1000,
+                                keyframes: [
+                                    {
+                                        y: -10,
+                                        percent: 0.5,
+                                        easing: 'cubicOut'
+                                    },
+                                    {
+                                        y: 0,
+                                        percent: 1,
+                                        easing: 'bounceOut'
+                                    }
+                                ]
+                            },
+                            tooltip: {
+                                show: true,
+                                formatter: '¡Flecha hacia Cuenca!'  // El mensaje del tooltip
+                            }
+                        };
+
+                        return {
+                            type: 'group',
+                            x: coord[0],
+                            y: coord[1],
+                            children: [
+                                ...circles,  // Los círculos animados
+                                arrow  // La flecha animada
+                            ]
+                        };
+                    }
+                }
+            };
+
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>

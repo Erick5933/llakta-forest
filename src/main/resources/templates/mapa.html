@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Llakta Forest</title>
+			<link rel="icon" href="/imagenes/logollakta.png" type="image/png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(0, 128, 0);
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+            color: rgb(255, 255, 255);
+            font-size: 36px;
+            font-weight: bold;
+        }
+        #map {
+            height: 100vh; 
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            transition: all 0.5s ease;
+        }
+        .loading-bar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 50px;
+            padding: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+	<div th:replace="layout/layoutAdmin :: menu"></div>
+    <div id="map"></div>
+    <div class="loading-bar" id="loading-bar">Cargando...</div>
+
+    <script th:inline="javascript">
+        document.getElementById("loading-bar").style.display = "block";
+
+        var map = L.map('map').setView([-2.838080, -79.224942], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var parcelas = /*[[${parcelas}]]*/ [];
+		var parcelaSeleccionada = /*[[${parcelaSeleccionada}]]*/ null;
+        var proyectoNombres = /*[[${proyectoNombres}]]*/ {};
+		var sueloNombres = /*[[${sueloNombres}]]*/ {};
+		var areaNombres = /*[[${areaNombres}]]*/ {};
+
+        console.log(parcelas);
+        console.log(proyectoNombres);
+		console.log(sueloNombres);
+		console.log(areaNombres);
+
+        var colores = ["#ff6347", "#32cd32", "#1e90ff", "#ffdead", "#dda0dd", "#20b2aa"];
+
+        parcelas.forEach(function(parcela, index) {
+            if (!parcela || !parcela.y || !parcela.x) {
+                console.warn("Parcela inválida:", parcela);
+                return; // Salta esta iteración si la parcela no es válida
+            }
+
+            var centro = [parcela.y, parcela.x];
+            var esquinaSuperiorIzquierda = [
+                centro[0] + (parcela.largo / 2 / 111320),
+                centro[1] - (parcela.ancho / 2 / (111320 * Math.cos(centro[0] * Math.PI / 180)))
+            ];
+            var esquinaInferiorDerecha = [
+                centro[0] - (parcela.largo / 2 / 111320),
+                centro[1] + (parcela.ancho / 2 / (111320 * Math.cos(centro[0] * Math.PI / 180)))
+            ];
+
+            var rectangulo = L.rectangle([esquinaSuperiorIzquierda, esquinaInferiorDerecha], {
+                color: colores[index % colores.length],
+                weight: 3,
+                fillOpacity: 0.3
+            }).addTo(map);
+
+            var proyectoNombre = proyectoNombres[parcela.id_parcelas] || "No disponible";
+			var sueloNombre = sueloNombres[parcela.id_parcelas] || "No disponible";
+			var areaNombre = areaNombres[parcela.id_parcelas] || "No disponible";
+
+            rectangulo.bindPopup(
+				'<b>Proyecto:</b> ' + proyectoNombre + '<br>'+
+				'<b>Suelo:</b> ' + sueloNombre + '<br>'+
+                '<b>Área:</b> ' + areaNombre + ' <br>' +
+                '<b>Largo:</b> ' + parcela.largo + ' m<br>' +
+                '<b>Ancho:</b> ' + parcela.ancho + ' m<br>' 
+               
+            );
+
+            rectangulo.on('mouseover', function() {
+                this.setStyle({ fillOpacity: 0.5 });
+            });
+            rectangulo.on('mouseout', function() {
+                this.setStyle({ fillOpacity: 0.3 });
+            });
+            rectangulo.on('click', function() {
+                this.openPopup();
+            });
+			
+			if (parcelaSeleccionada && parcela.id_parcelas === parcelaSeleccionada.id_parcelas) {
+			            map.setView(centro, 15);
+			            rectangulo.setStyle({ color: '#ff4500', fillOpacity: 0.6 });
+			            rectangulo.openPopup();
+			        }
+        });
+
+        setTimeout(function() {
+            document.getElementById("loading-bar").style.display = "none";
+        }, 1000);
+    </script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<div th:replace="layout/layoutAdmin :: footercompacto"></div>
+
+</body>
+</html>

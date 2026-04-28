@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Llakta Forest</title>
+		<link rel="icon" href="/imagenes/logollakta.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        
+		html,
+		body {
+		    height: 100%;
+		    margin: 0;
+		    display: flex;
+		    flex-direction: column;
+		    font-family: 'Roboto', sans-serif;
+		    background-size: cover;
+		    background-position: center;
+		    background-attachment: fixed;
+		    color: black;
+		}
+
+		.form-container {
+		    background-color: rgba(255, 255, 255, 0.9);
+		    padding: 100px; /* Espacio interno */
+		    border-radius: 10px;
+		    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+		    width: 80%; /* Ocupa todo el ancho disponible */
+		    max-width: 1200px; /* Ancho máximo ajustado */
+		    margin: auto;
+		    margin-top: 50px;
+		}
+
+		.form-container h1 {
+		    text-align: center;
+		    margin-bottom: 20px;
+		    color: #333333;
+		}
+		h1 {
+					text-align: center;
+					margin-bottom: 20px;
+					color: #333333;
+				}
+
+		legend {
+		    font-size: 1.2em;
+		    font-weight: bold;
+		    color: #333333;
+		    padding: 0 10px;
+		}
+
+		.btn-group {
+		    display: flex;
+		    justify-content: center;
+		    gap: 10px;
+		}
+
+		.btn-primary {
+		    background-color: #4F5B3A; /* Cambia aquí el color de fondo */
+		    border-color: #007bff; /* Cambia aquí el color del borde */
+		}
+
+		.btn-primary:hover {
+		    background-color: #0056b3; /* Cambia aquí el color de fondo al pasar el mouse */
+		    border-color: #0056b3; /* Cambia aquí el color del borde al pasar el mouse */
+		}
+
+		.btn-danger {
+		    background-color: #4F5B3A; /* Cambia aquí el color de fondo */
+		    border-color: #4F5B3A; /* Cambia aquí el color del borde */
+		}
+
+		.btn-danger:hover {
+		    background-color: #c82333; /* Cambia aquí el color de fondo al pasar el mouse */
+		    border-color: #c82333; /* Cambia aquí el color del borde al pasar el mouse */
+		}
+
+.error-message {
+            color: red;
+            font-size: 0.875em;
+        }
+
+    </style>
+        
+</head>
+<body>
+    <div th:replace="layout/layoutSuperAdmin :: menusuper"></div>
+    <div th:replace="layout/layoutAdmin :: fondo1"></div>
+
+    <div class="form-container">
+        <h1>Registrar Administrador</h1>
+
+        <form action="/guardar" method="post">
+            <input type="hidden" name="id_super_administrador" th:value="${idSuperAdministrador}">
+            <input type="hidden" name="id_usuarios" th:value="${usuario.id_usuarios}">
+            <input type="hidden" name="id_administrador" th:value="${administrador.id_administrador}">
+
+            <!-- Datos del Usuario -->
+            <fieldset>
+                <legend>Datos del Usuario</legend>
+                <div class="row mb-3">
+					<div class="col-md-6">
+					    <label for="cedula">Cédula:</label>
+					    <input type="text" name="cedula" id="cedula" 
+					           th:value="${usuario.cedula}" 
+					           required maxlength="10" 
+					           placeholder="Cédula de 10 dígitos" 
+					           class="form-control" 
+					           th:disabled="${esEdicion}">
+					    <!-- Campo oculto para mantener el valor de la cédula en modo de edición -->
+					    <input type="hidden" name="cedula" th:if="${esEdicion}" th:value="${usuario.cedula}">
+					    <div class="error-message" th:if="${cedulaError}" th:text="${cedulaError}"></div>
+					</div>
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <input type="text" name="nombre" id="nombre" th:value="${usuario.nombre}" class="form-control" required>
+                        <div class="error-message" th:if="${nombreError}" th:text="${nombreError}"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="apellido" class="form-label">Apellido:</label>
+                        <input type="text" name="apellido" id="apellido" th:value="${usuario.apellido}" class="form-control" required>
+                        <div class="error-message" th:if="${apellidoError}" th:text="${apellidoError}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="correo" class="form-label">Correo:</label>
+                        <input type="email" name="correo" id="correo" th:value="${usuario.correo}" class="form-control" required>
+                        <div class="error-message" th:if="${correoError}" th:text="${correoError}"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento:</label>
+                        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" 
+                               th:value="${#dates.format(usuario.fecha_nacimiento, 'yyyy-MM-dd')}" 
+                               class="form-control" required>
+                        <div class="error-message" th:if="${fecha_nacimientoError}" th:text="${fecha_nacimientoError}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="genero" class="form-label">Género:</label>
+                        <select name="genero" id="genero" class="form-select" required>
+                            <option th:value="Masculino" th:selected="${usuario.genero != null && usuario.genero == 'Masculino'}">Masculino</option>
+                            <option th:value="Femenino" th:selected="${usuario.genero != null && usuario.genero == 'Femenino'}">Femenino</option>
+                        </select>
+                        <div class="error-message" th:if="${generoError}" th:text="${generoError}"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="celular" class="form-label">Celular:</label>
+                        <input type="text" name="celular" id="celular" th:value="${usuario.celular}" class="form-control" required>
+                        <div class="error-message" th:if="${celularError}" th:text="${celularError}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="contraseña" class="form-label">Contraseña:</label>
+                        <input type="password" name="contraseña" id="contraseña" 
+                               th:value="${usuario.contraseña}" class="form-control" required>
+                        <div class="error-message" th:if="${contraseñaError}" th:text="${contraseñaError}"></div>
+                    </div>
+                </div>
+                <input type="hidden" name="contraseña_oculta" th:value="${usuario.contraseña}">
+            </fieldset>
+
+            <!-- Ubicación -->
+            <fieldset>
+				<legend>Ubicación</legend>
+				<div class="row mb-3">
+				    <div class="col-md-6">
+				        <label for="id_provincia" class="form-label">Seleccione la Provincia:</label>
+				        <select id="id_provincia" name="id_provincia" class="form-control" required>
+				            <option value="" disabled selected>Seleccione una Provincia</option>
+				            <th:block th:each="provincia : ${provincias}">
+				                <option th:value="${provincia.id_provincia}" 
+				                        th:selected="${provincia.id_provincia == provinciaSeleccionada}" 
+				                        th:text="${provincia.nombreProvincia}"></option>
+				            </th:block>
+				        </select>
+				    </div>
+				    <div class="col-md-6">
+				        <label for="id_canton" class="form-label">Cantón:</label>
+				        <select id="id_canton" name="id_canton" class="form-control" required>
+				            <option value="" disabled>Seleccione un Cantón</option>
+				            <th:block th:each="canton : ${cantones}">
+				                <option th:value="${canton.id_canton}" 
+				                        th:selected="${canton.id_canton == cantonSeleccionado}" 
+				                        th:text="${canton.nombreCanton}"></option>
+				            </th:block>
+				        </select>
+				    </div>
+				</div>
+				<div class="row mb-3">
+				    <div class="col-md-6">
+				        <label for="id_parroquia" class="form-label">Parroquia:</label>
+						<select id="id_parroquia" name="id_parroquia" class="form-control" required>
+						    <option value="" disabled selected>Seleccione una Parroquia</option>
+						    <th:block th:each="parroquia : ${parroquias}">
+						        <option th:value="${parroquia.id_parroquia}" 
+						                th:selected="${parroquia.id_parroquia == parroquiaSeleccionada}" 
+						                th:text="${parroquia.nombreParroquia}"></option>
+						    </th:block>
+						</select>
+									    </div>
+				    <div class="col-md-6">
+				        <label for="actividades_gestionadas" class="form-label">Actividades Gestionadas:</label>
+				        <input type="number" name="actividades_gestionadas" id="actividades_gestionadas" 
+				               th:value="${administrador.actividades_gestionadas}" class="form-control" required>
+				    </div>
+				</div>			</fieldset>
+
+				            <div class="btn-group">
+                <button type="submit" class="btn btn-danger">Guardar</button>
+                <a href="/listarAdministradores" class="btn btn-secondary">Volver a la lista</a>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:utext="${error}"></p>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success">
+        <p th:text="${success}"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+		// Lógica para manejar las provincias, cantones y parroquias
+		document.addEventListener('DOMContentLoaded', function() {
+		    const provinciaSelect = document.getElementById('id_provincia');
+		    const cantonSelect = document.getElementById('id_canton');
+		    const parroquiaSelect = document.getElementById('id_parroquia');
+
+		    const provinciaSeleccionada = /*[[${provinciaSeleccionada}]]*/ null; // Valor de la provincia seleccionada
+		    const cantonSeleccionado = /*[[${cantonSeleccionado}]]*/ null; // Valor del cantón seleccionado
+		    const parroquiaSeleccionada = /*[[${parroquiaSeleccionada}]]*/ null; // Valor de la parroquia seleccionada
+
+		    if (provinciaSeleccionada) {
+		        cargarCantones(provinciaSeleccionada, cantonSeleccionado, parroquiaSeleccionada);
+		    }
+
+		    provinciaSelect.addEventListener('change', () => {
+		        cargarCantones(provinciaSelect.value);
+		    });
+
+		    cantonSelect.addEventListener('change', () => {
+		        cargarParroquias(cantonSelect.value);
+		    });
+
+		    // Cargar cantones
+		    function cargarCantones(idProvincia, idCantonSeleccionado = null) {
+		        fetch(`/cantones/${idProvincia}`)
+		            .then(response => response.json())
+		            .then(data => {
+		                cantonSelect.innerHTML = '<option value="" disabled selected>Seleccione un Cantón</option>';
+		                data.forEach(canton => {
+		                    const selected = canton.id_canton == idCantonSeleccionado ? 'selected' : '';
+		                    cantonSelect.innerHTML += `<option value="${canton.id_canton}" ${selected}>${canton.nombreCanton}</option>`;
+		                });
+		                cantonSelect.disabled = false;
+
+		                // Cargar parroquias si hay un cantón seleccionado
+		                if (idCantonSeleccionado) {
+		                    cargarParroquias(idCantonSeleccionado);
+		                }
+		            });
+		    }
+
+		    // Cargar parroquias
+		    function cargarParroquias(idCanton) {
+		        fetch(`/parroquias/${idCanton}`)
+		            .then(response => response.json())
+		            .then(data => {
+		                parroquiaSelect.innerHTML = '<option value="" disabled selected>Seleccione una Parroquia</option>';
+		                data.forEach(parroquia => {
+		                    const selected = parroquia.id_parroquia == parroquiaSeleccionada ? 'selected' : '';
+		                    parroquiaSelect.innerHTML += `<option value="${parroquia.id_parroquia}" ${selected}>${parroquia.nombreParroquia}</option>`;
+		                });
+		                parroquiaSelect.disabled = false;
+		            });
+		    }
+		});    </script>
+		</br>
+    <div th:replace="layout/layoutAdmin :: footercompacto"></div>
+</body>
+</html>

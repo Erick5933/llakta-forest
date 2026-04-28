@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reporte Gráfico</title>
+			<link rel="icon" href="/imagenes/logollakta.png" type="image/png">
+    <!-- Incluir el CDN de Apache ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.0/dist/echarts.min.js"></script>
+    <style>
+        /* Contenedor del gráfico */
+        .charts-container {
+            display: flex;
+            justify-content: center;  /* Centrar el gráfico */
+            margin-top: 20px;  /* Espacio desde el título */
+        }
+
+        /* Estilo individual del gráfico */
+        .chart {
+            width: 80%;  /* Asignar un ancho más grande para el gráfico */
+            height: 500px; /* Altura ajustada para una mejor proporción */
+        }
+
+        /* Mejoras visuales para el cuerpo */
+        body {
+            font-family: 'Arial', sans-serif; /* Mejora la tipografía */
+            background-color: #f4f4f9;  /* Fondo suave para una mejor experiencia */
+            color: #333; /* Texto oscuro para buen contraste */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #3a3a3a;
+            font-size: 2em;
+            margin: 20px;
+        }
+
+        /* En dispositivos pequeños, el gráfico ocupará toda la pantalla */
+        @media (max-width: 768px) {
+            .chart {
+                width: 100%;
+            }
+        }
+
+        /* Añadir sombra sutil a los gráficos */
+        .chart {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background-color: #fff; /* Fondo blanco para el gráfico */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Reporte Gráfico de Proyectos Activos</h1>
+
+<!-- Contenedor donde se mostrará el gráfico -->
+<div class="charts-container">
+    <div id="chartActivos" class="chart"></div>
+</div>
+
+<script th:inline="javascript">
+    // Obtener los datos de proyectos activos desde el modelo
+    var nombresProyectosActivos = [[${nombresProyectosActivos}]];
+
+    // Función para preparar los datos del gráfico
+    function prepararDatos(proyectos) {
+        return proyectos.map(function(proyecto) {
+            return { name: proyecto.nombre, value: proyecto.porcentaje };  // Ajusta el valor como lo necesites
+        });
+    }
+
+    // Inicializar el gráfico de proyectos activos
+    var myChartActivos = echarts.init(document.getElementById('chartActivos'));
+
+    // Configuración del gráfico de barras para proyectos activos
+    var option = {
+        title: {
+            text: 'Proyectos Activos',
+            subtext: 'Distribución de proyectos',
+            left: 'center',
+            textStyle: {
+                fontWeight: 'bold',
+                fontSize: 24,
+                color: '#333'
+            },
+            subtextStyle: {
+                fontSize: 16,
+                color: '#777'
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'shadow' },
+            formatter: '{b}: ({c}%)'  // Para mostrar el nombre del proyecto y su porcentaje
+        },
+        xAxis: {
+            type: 'category',
+            data: nombresProyectosActivos.map(function(proyecto) {
+                return proyecto.nombre;
+            }),
+            axisLabel: {
+                interval: 0,  // Para mostrar todas las etiquetas de los proyectos
+                rotate: 45,   // Girar las etiquetas para mayor visibilidad
+                fontSize: 12,
+                color: '#555'
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#ccc'
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value}%',  // Mostrar el porcentaje en el eje Y
+                fontSize: 14,
+                color: '#555'
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#ccc'
+                }
+            }
+        },
+        series: [
+            {
+                name: 'Proyectos',
+                type: 'bar',
+                data: nombresProyectosActivos.map(function(proyecto) {
+                    return proyecto.porcentaje;
+                }),
+                barWidth: '30%',  // Reducir el ancho de las barras
+                itemStyle: {
+                    color: '#4caf50',  // Color verde para las barras
+                    borderRadius: 4,  // Bordes redondeados para las barras
+                    shadowBlur: 6,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 2,
+                    shadowColor: 'rgba(0, 0, 0, 0.2)'
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#ff7043',  // Color naranja cuando se pasa el ratón sobre la barra
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                },
+                animationDuration: 1500,  // Añadir animación para la carga
+            }
+        ]
+    };
+
+    // Establecer la opción para el gráfico
+    myChartActivos.setOption(option);
+</script>
+
+</body>
+</html>

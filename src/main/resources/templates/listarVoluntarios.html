@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Llakta Forest</title>
+			<link rel="icon" href="/imagenes/logollakta.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap');
+
+		body {
+		            font-family: 'Roboto', sans-serif;
+		            background-color: #ffffff;
+		            background-size: cover;
+		            background-position: center;
+		            background-attachment: fixed;
+		            display: flex;
+		            flex-direction: column;
+		            min-height: 100vh;
+		        }
+
+		        .container {
+		            margin-top: 50px;
+		            background-color: rgba(255, 255, 255, 0.85);
+		            padding: 30px;
+		            border-radius: 10px;
+		            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+		            max-width: 1100px;
+		            animation: fadeIn 1s ease-in-out;
+		        }
+
+		        @keyframes fadeIn {
+		            from {
+		                opacity: 0;
+		                transform: translateY(-20px);
+		            }
+		            to {
+		                opacity: 1;
+		                transform: translateY(0);
+		            }
+		        }
+
+		        .table-container h1 {
+		            text-align: center;
+		            color: #2d6a4f;
+		            font-weight: 700;
+		            margin-bottom: 30px;
+		            animation: slideIn 1s ease-in-out;
+		        }
+
+		        @keyframes slideIn {
+		            from {
+		                transform: translateX(-100%);
+		            }
+		            to {
+		                transform: translateX(0);
+		            }
+		        }
+
+		        .table th, .table td {
+		            text-align: center;
+		            vertical-align: middle;
+		        }
+
+		        .table th {
+		            background-color: #4F5B3A;
+		            color: #fff;
+		            animation: slideIn 1s ease-in-out;
+		        }
+
+		        .table tbody tr:nth-child(even) {
+		            background-color: #f1f8e9;
+		        }
+
+		        .table tbody tr:hover {
+		            background-color: #a8d5ba;
+		            transform: scale(1.02);
+		            transition: all 0.3s ease-in-out;
+		        }
+
+		        .btn {
+		            border-radius: 5px;
+		            padding: 8px 15px;
+		            transition: all 0.3s ease-in-out;
+		        }
+
+		        .btn-primary {
+		            background-color: #4F5B3A;
+		            border-color: rgb(0, 0, 0);
+		        }
+
+		        .btn-primary:hover {
+		            background-color: #4F5B3A;
+		            transform: scale(1.05);
+		        }
+
+		        .btn-warning {
+		            background-color: #F1E6D6;
+		            border-color: #F1E6D6;
+		        }
+
+		        .btn-warning:hover {
+		            background-color: #F1E6D6;
+		            transform: scale(1.05);
+		        }
+
+		        .btn-danger {
+		            background-color: #D94F4F;
+		            border-color: rgb(0, 0, 0);
+		        }
+
+		        .btn-danger:hover {
+		            background-color: #D94F4F;
+		            transform: scale(1.05);
+		        }
+
+		        .footer {
+		            background-color: #388e3c;
+		            color: white;
+		            text-align: center;
+		            margin-top: auto;
+		            font-size: 12px;
+		            padding: 10px 0;
+		        }
+
+		        .footer a {
+		            color: white;
+		            text-decoration: none;
+		        }
+
+		        .footer a:hover {
+		            text-decoration: underline;
+		        }
+
+		        .table-container input {
+		            margin-bottom: 15px;
+		            border-radius: 5px;
+		            border: 1px solid #ced4da;
+		            padding: 10px;
+		            width: 100%;
+		            box-sizing: border-box;
+		            transition: border-color 0.3s ease;
+		        }
+
+		        .table-container input:focus {
+		            border-color: #4F5B3A;
+		            box-shadow: 0 0 5px rgba(56, 142, 60, 0.5);
+		        }
+    </style>
+</head>
+<body>
+    <div th:replace="layout/layoutSuperAdmin :: menusuper"></div>
+	<div th:replace="layout/layoutAdmin :: fondo1"></div>
+
+    <div class="container">
+        <div class="table-container">
+            <h2 th:text="${titulo}">Listado de Voluntarios y Usuarios</h2>
+
+            <a href="/voluntarios" class="btn btn-primary mb-3">
+                <i class="fas fa-plus"></i> Agregar Voluntario
+            </a>
+
+            <div th:if="${success}" class="alert alert-success" role="alert">
+                <p th:text="${success}"></p>
+            </div>
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <p th:text="${error}"></p>
+            </div>
+
+			<!-- Campo de búsqueda -->
+			        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Buscar por nombre o apellido..." onkeyup="filterTable()">
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID Voluntario</th>
+                            <th>Cédula</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Correo</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Género</th>
+                            <th>Celular</th>
+                            <th>Experiencia</th>
+                            <th>Estado</th>
+                            <th>Disponibilidad</th>
+                            <th>Fecha Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${combinados}">
+                            <td th:text="${item['voluntarios'].id_voluntario}"></td>
+                            <td th:text="${item['usuario'].cedula}"></td>
+                            <td th:text="${item['usuario'].nombre}"></td>
+                            <td th:text="${item['usuario'].apellido}"></td>
+                            <td th:text="${item['usuario'].correo}"></td>
+                            <td th:text="${item['usuario'].fecha_nacimiento}"></td>
+                            <td th:text="${item['usuario'].genero}"></td>
+                            <td th:text="${item['usuario'].celular}"></td>
+                            <td th:text="${item['voluntarios'].experiencia}"></td>
+                            <td th:text="${item['voluntarios'].estado}"></td>
+                            <td th:text="${item['voluntarios'].disponibilidad}"></td>
+                            <td th:text="${item['voluntarios'].fechaRegistro}"></td>
+                            <td class="btn-group">
+                                <a th:href="@{/voluntarios?id={id}(id=${item['voluntarios'].id_voluntario})}" class="btn btn-warning btn-sm">Editar</a>
+                                <form th:action="@{/deletevoluntario/{id}(id=${item['voluntarios'].id_voluntario})}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este voluntario?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+	<br>
+    <div th:replace="layout/layoutAdmin :: footercompacto"></div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	    // Función para filtrar la tabla
+	    function filterTable() {
+	        var input, filter, table, tr, td, i, txtValue;
+	        input = document.getElementById('searchInput');
+	        filter = input.value.toUpperCase();
+	        table = document.querySelector('table');
+	        tr = table.getElementsByTagName('tr');
+	        
+	        for (i = 1; i < tr.length; i++) {  // Comienza en 1 para saltar el encabezado
+	            td = tr[i].getElementsByTagName('td');
+	            if (td.length > 0) {
+	                // Filtrar por la columna de nombre (2) y apellido (3)
+	                var nombre = td[2].textContent || td[2].innerText;
+	                var apellido = td[3].textContent || td[3].innerText;
+	                if (nombre.toUpperCase().indexOf(filter) > -1 || apellido.toUpperCase().indexOf(filter) > -1) {
+	                    tr[i].style.display = "";
+	                } else {
+	                    tr[i].style.display = "none";
+	                }
+	            }
+	        }
+	    }
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Navbar con Bootstrap</title>
+
+	<!-- Agregar enlace al CSS de Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/6en8XCp+HHAAK5GSLf2xlYtvJ8U2Q4U+9cuEnJ" crossorigin="anonymous">
+
+</head>
+
+<body>
+	<div th:fragment="menu">
+		<!-- Menú de navegación con Bootstrap -->
+		<nav class="navbar navbar-expand-lg" style="background-color: #F5F4F0;">
+
+			<div class="container-fluid">
+				<a class="navbar-brand" href="inicioadmin">
+					<img src="/imagenes/logollakta.png" alt="Logo Principal" height="50">
+				</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+					aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarScroll">
+					<ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+						<!-- Menú Proyectos -->
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+								data-bs-toggle="dropdown" aria-expanded="false"
+								style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+								Proyectos
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="/proyectos">Crear Proyecto</a></li>
+								<li><a class="dropdown-item" href="/area">Crear Área</a></li>
+								<li><a class="dropdown-item" href="/parcelas">Crear Parcela</a></li>
+							</ul>
+						</li>
+
+						<!-- Ver Proyectos -->
+						<li class="nav-item">
+							<a class="nav-link" href="/verlistasproyectos" id="navbarDropdown" role="button"
+								aria-expanded="false" style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+								Ver listas de proyectos
+							</a>
+						</li>
+
+						<!-- Menú Actividades -->
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+								data-bs-toggle="dropdown" aria-expanded="false"
+								style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+								Actividades
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="/asignacion">Asignar Actividad</a></li>
+								<li><a class="dropdown-item" href="/Combobox">Asignar Actividad Equipo</a></li>
+								<li><a class="dropdown-item" href="/formularioIntervenciones">Asignación de Equipos a
+										Parcelas</a>
+								</li>
+
+							</ul>
+						</li>
+
+						<!-- Ver Actividades -->
+						<li class="nav-item">
+							<a class="nav-link" href="/verlistasactividades" id="navbarDropdown" role="button"
+								aria-expanded="false" style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+								Ver listas de Actividades
+							</a>
+						</li>
+
+					</ul>
+
+					<!-- Menú Suelo y Especie junto a Perfil -->
+					<ul class="navbar-nav ms-auto">
+						<!-- Menú Suelo -->
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+								data-bs-toggle="dropdown" aria-expanded="false"
+								style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+								Suelo
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="/tiposuelos">Tipos Suelos</a></li>
+								<li><a class="dropdown-item" href="/suelo">Crear Suelo</a></li>
+								<li>
+									<hr class="dropdown-divider">
+								</li>
+								<li><a class="dropdown-item" href="/listarsuelo">Ver Suelo</a></li>
+								<li><a class="dropdown-item" href="/listartiposuelo">Ver TipoSuelo</a></li>
+							</ul>
+						</li>
+						<!-- Menú Especie -->
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+								data-bs-toggle="dropdown" aria-expanded="false"
+								style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+								Especie
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="/especie">Crear Especie</a></li>
+								<li><a class="dropdown-item" href="/planta">Crear Planta</a></li>
+								<li>
+									<hr class="dropdown-divider">
+								</li>
+								<li><a class="dropdown-item" href="/listarplantas">Ver Plantas</a></li>
+								<li><a class="dropdown-item" href="/listarespecie">Ver Especie</a></li>
+							</ul>
+						</li>
+						<!-- Menú Perfil -->
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link" href="/logout"
+									style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+									Cerrar sesión
+								</a>
+							</li>
+						</ul>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-pzjw8f+ua7Kw1TIq0BfiW6v7cXw4b0uEK5T5Xn6Pffqb5Oo/fBfXnPA0fqnsOg3h"
+		crossorigin="anonymous"></script>
+
+	<div th:fragment="footer">
+		<div id="footer" class="text-center p-3 fixed-bottom" style="background-color: #4F5B3A; color: white;">
+		    © 2025 LLakta Forest - Todos los derechos reservados.
+		</div>
+	</div>
+
+	<div th:fragment="fondo">
+		<div th:fragment="fondo"
+			style="position: absolute; top: 0; left: 0; width: 100%; height: 100vh; background-image: url('/imagenes/cajas.gif'); background-size: cover; background-position: center; z-index: -1;">
+		</div>
+	</div>
+
+
+	<div th:fragment="fondo1">
+		<div th:fragment="fondo1" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
+	                background-image: url('/imagenes/Fondo1.jpg'); 
+	                background-size: cover; 
+	                background-position: center; 
+	                background-attachment: fixed; 
+	                z-index: -9999;">
+		</div>
+	</div>
+
+	<div th:fragment="footercompacto">
+		    <div id="footer" class="text-center py-1" style="background-color: #4F5B3A; color: white; font-size: 12px;">
+		        © 2025 LLakta Forest - Todos los derechos reservados.
+		    </div>
+		  
+		</div>
+		<head th:fragment="logo">
+		    <link rel="icon" type="image/png" th:href="@{/favicon.ico}">
+		    <title th:text="${title} ?: 'Mi Aplicación'"></title>
+		</head>
+
+
+</body>
+
+</html>

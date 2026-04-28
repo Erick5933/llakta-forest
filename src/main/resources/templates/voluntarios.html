@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Llakta Forest</title>
+		<link rel="icon" href="/imagenes/logollakta.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Roboto', sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+        }
+
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #747b4f;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #68705a;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"],
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #a6b285;
+            border-radius: 8px;
+            background-color: #fbffed;
+            color: #68705a;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        .form-select:focus {
+            border-color: #747b4f;
+            outline: none;
+            box-shadow: 0 0 8px rgba(116, 123, 79, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #747b4f;
+            color: #fbffed;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            background-color: #68705a;
+            transform: translateY(-2px);
+        }
+
+        button i {
+            transition: transform 0.3s ease;
+        }
+
+        button:hover i {
+            transform: translateX(5px);
+        }
+
+        .error {
+            color: #d32f2f;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 15px;
+            color: #68705a;
+        }
+
+        .register-link a {
+            color: #747b4f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        fieldset {
+            border: 1px solid #a6b285;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fbffed;
+        }
+
+        legend {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #747b4f;
+            padding: 0 10px;
+        }
+
+        .mostrar-contraseña {
+            font-size: 0.9em;
+            color: #68705a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mostrar-contraseña input {
+            margin: 0;
+        }
+
+        /* Ajustes para centrar y organizar mejor los campos */
+        .row.g-3 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; /* Espacio entre columnas */
+        }
+
+        .row.g-3 .col-md-6 {
+            flex: 1 1 calc(50% - 15px); /* Dos columnas con espacio entre ellas */
+        }
+
+        .row.g-3 .col-md-12 {
+            flex: 1 1 100%; /* Una columna completa */
+        }
+
+        .centrar-experiencia {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="layout/layoutinicio :: menuinicio"></div>
+    <div th:replace="layout/layoutAdmin :: fondo1"></div>
+
+    <div class="login-wrapper">
+        <div class="login-container">
+            <h2>Registro Voluntario</h2>
+            <form action="/guardarvolun" method="post" onsubmit="return validarFormulario()">
+                <fieldset>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cedula">Cédula:</label>
+                                <input type="text" name="cedula" id="cedula" required maxlength="10"
+                                    placeholder="Cédula de 10 dígitos"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <div id="mensajeCedula"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nombre">Nombre:</label>
+                                <input type="text" id="nombre" name="nombre" required
+                                    oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="apellido">Apellido:</label>
+                                <input type="text" id="apellido" name="apellido" required
+                                    oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="correo">Correo:</label>
+                                <input type="email" id="correo" name="correo" required>
+                            </div>
+                        </div>
+						<div class="col-md-6">
+						    <div class="form-group">
+						        <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+						        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required 
+						               max="" onchange="validarFechaNacimiento()">
+						        <small id="mensajeFecha" style="color: red;"></small> <!-- Mensaje de error -->
+						    </div>
+						</div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="genero">Género:</label>
+                                <select id="genero" name="genero" class="form-select" required>
+                                    <option value="" disabled selected>Selecciona tu género</option>
+                                    <option value="MASCULINO">Masculino</option>
+                                    <option value="FEMENINO">Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="celular">Celular:</label>
+                                <input type="text" id="celular" name="celular" required
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <small id="mensajeCelular"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_provincia" class="form-label">Seleccione la Provincia:</label>
+                                <select id="id_provincia" class="form-control" required>
+                                    <option value="" disabled selected>Seleccione una Provincia</option>
+                                    <th:block th:each="provincia : ${provincias}">
+                                        <option th:value="${provincia.id_provincia}" th:text="${provincia.nombreProvincia}">
+                                        </option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_canton" class="form-label">Seleccione el Cantón:</label>
+                                <select id="id_canton" class="form-control" required disabled>
+                                    <option value="" disabled selected>Seleccione un Cantón</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_parroquia" class="form-label">Seleccione la Parroquia:</label>
+                                <select id="id_parroquia" name="id_parroquia" class="form-control" required disabled>
+                                    <option value="" disabled selected>Seleccione una Parroquia</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contraseña">Contraseña:</label>
+                                <input type="password" id="contraseña" name="contraseña" required minlength="8"
+                                    oninput="this.value = this.value.replace(/[^A-Za-z\d@$!%*?&]/g, '')">
+                                <label for="mostrarContraseña" class="mostrar-contraseña">
+                                    <input type="checkbox" id="mostrarContraseña"
+                                        onclick="togglePasswordVisibility('contraseña')"> Mostrar Contraseña
+                                </label>
+                                <small id="mensajeContraseña"></small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="confirmar_contraseña">Confirmar Contraseña:</label>
+                                <input type="password" id="confirmar_contraseña" name="confirmar_contraseña" required minlength="8"
+                                    oninput="this.value = this.value.replace(/[^A-Za-z\d@$!%*?&]/g, '')">
+                                <label for="mostrarConfirmarContraseña" class="mostrar-contraseña">
+                                    <input type="checkbox" id="mostrarConfirmarContraseña"
+                                        onclick="togglePasswordVisibility('confirmar_contraseña')"> Mostrar Contraseña
+                                </label>
+                                <small id="mensajeConfirmacion"></small>
+                            </div>
+                        </div>
+                    </div>
+					
+					
+					<div class="form-group">
+									    <label for="licencia">
+									        <input type="checkbox" id="licencia" name="licencia" required>
+									        Acepto los términos y condiciones de la <a href="licencia.html" target="_blank">licencia</a>.
+									    </label>
+									</div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Datos del Voluntario</legend>
+                    <div class="row g-3 centrar-experiencia">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="experiencia">Experiencia:</label>
+                                <input type="text" name="experiencia" id="experiencia" required>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <button type="submit">
+                    <span>Guardar</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script>
+
+		function validarFormulario() {
+		    var licenciaAceptada = document.getElementById('licencia').checked;
+		    if (!licenciaAceptada) {
+		        alert("Debe aceptar los términos y condiciones para registrarse.");
+		        return false;  // Previene el envío del formulario
+		    }
+		    return true;  // Permite el envío del formulario
+		}
+
+
+		function calcularFechaMinima() {
+		        let fechaHoy = new Date();
+		        let fechaMinima = new Date();
+
+		        fechaMinima.setFullYear(fechaHoy.getFullYear() - 18); // Restar 18 años
+
+		        return fechaMinima.toISOString().split("T")[0];
+		    }
+
+		    document.getElementById('fecha_nacimiento').max = calcularFechaMinima(); // Establecer la fecha máxima permitida
+
+		    function validarFechaNacimiento() {
+		        let fechaInput = document.getElementById('fecha_nacimiento');
+		        let mensajeFecha = document.getElementById('mensajeFecha');
+		        let fechaSeleccionada = new Date(fechaInput.value);
+		        let fechaMinima = new Date(calcularFechaMinima());
+
+		        fechaMinima.setHours(0, 0, 0, 0);
+
+		        if (fechaSeleccionada > fechaMinima) {
+		            mensajeFecha.textContent = "Debes tener al menos 18 años.";
+		            fechaInput.setCustomValidity("Debes tener al menos 18 años.");
+		        } else {
+		            mensajeFecha.textContent = "";
+		            fechaInput.setCustomValidity(""); 
+		        }
+		    }
+		function validarFormulario() {
+			const mensajeCedula = document.getElementById("mensajeCedula").innerText.trim();
+			const mensajeCelular = document.getElementById("mensajeCelular").innerText.trim();
+			const mensajeContraseña = document.getElementById("mensajeContraseña").innerText.trim();
+			const mensajeConfirmacion = document.getElementById("mensajeConfirmacion").innerText.trim();
+
+			// Comprobar si todos los mensajes contienen las palabras de validación
+			if (mensajeCedula !== "✅ Cédula válida y disponible" ||
+				mensajeCelular !== "✅ Número de celular válido" ||
+				mensajeContraseña !== "✅ Contraseña válida" ||
+				mensajeConfirmacion !== "✅ Las contraseñas coinciden") {
+
+				alert("Por favor, revise la información. Algunos campos no son válidos.");
+				return false;
+			}
+			return true;
+		}
+
+
+
+		function togglePasswordVisibility(id) {
+			var passwordInput = document.getElementById(id);
+			// Cambiar el tipo de input entre "password" y "text" según si el checkbox está marcado o no
+			if (passwordInput.type === "password") {
+				passwordInput.type = "text";
+			} else {
+				passwordInput.type = "password";
+			}
+		}
+
+		document.addEventListener("DOMContentLoaded", function () {
+			let inputCedula = document.getElementById("cedula");
+			let mensaje = document.getElementById("mensajeCedula");
+			let botonGuardar = document.querySelector("button[type='submit']");
+
+			inputCedula.addEventListener("blur", function () {
+				let cedula = this.value.trim();
+
+				if (!validarCedulaEcuatoriana(cedula)) {
+					mensaje.innerHTML = `<span style="color: red;">⚠️ Cédula inválida. Verifica los datos.</span>`;
+					botonGuardar.disabled = true;
+					return;
+				}
+
+				// Si la cédula es válida, verificamos si está registrada
+				fetch(`/cedulaVoltuntarui/${cedula}`)
+					.then(response => response.json())
+					.then(data => {
+						if (data) {
+							mensaje.innerHTML = `<span style="color: red;">⚠️ La cédula ya está registrada</span>`;
+							botonGuardar.disabled = true;
+						} else {
+							mensaje.innerHTML = `<span style="color: green;">✅ Cédula válida y disponible</span>`;
+							botonGuardar.disabled = false;
+						}
+					})
+					.catch(error => {
+						console.error("Error en la verificación:", error);
+						mensaje.innerHTML = `<span style="color: red;">⚠️ Error al verificar la cédula</span>`;
+						botonGuardar.disabled = true;
+					});
+			});
+
+			//Contraseña
+			const contraseñaInput = document.getElementById("contraseña");
+			const confirmarContraseñaInput = document.getElementById("confirmar_contraseña");
+			const mensajeContraseña = document.getElementById("mensajeContraseña");
+			const mensajeConfirmacion = document.getElementById("mensajeConfirmacion");
+
+			// Expresión regular para validar la contraseña
+			const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%]{8,}$/;
+
+			contraseñaInput.addEventListener("input", function () {
+				const contraseña = contraseñaInput.value;
+				const especiales = contraseña.match(/[@#$%]/g);
+				const cantidadEspeciales = especiales ? especiales.length : 0;
+
+				if (!regex.test(contraseña) || cantidadEspeciales > 3) {
+					mensajeContraseña.textContent = "Debe tener al menos 8 caracteres, incluir letras y números. Puede contener hasta 3 caracteres especiales (@, #, $, %).";
+					mensajeContraseña.style.color = "red";
+				} else {
+					mensajeContraseña.textContent = "✅ Contraseña válida";
+					mensajeContraseña.style.color = "green";
+				}
+			});
+
+			confirmarContraseñaInput.addEventListener("input", function () {
+				if (contraseñaInput.value !== confirmarContraseñaInput.value) {
+					mensajeConfirmacion.textContent = "Las contraseñas no coinciden.";
+					mensajeConfirmacion.style.color = "red";
+				} else {
+					mensajeConfirmacion.textContent = "✅ Las contraseñas coinciden";
+					mensajeConfirmacion.style.color = "green";
+				}
+			});
+
+
+
+
+			// Valiadr celular: 			
+			const celularInput = document.getElementById("celular");
+			const mensajeCelular = document.getElementById("mensajeCelular");
+
+			// Expresión regular para validar el número de celular (debe comenzar con 09 y tener 10 dígitos en total)
+			const regexCelular = /^09\d{8}$/;
+
+			celularInput.addEventListener("input", function () {
+				const celular = celularInput.value;
+
+				if (!regexCelular.test(celular)) {
+					mensajeCelular.textContent = "El número de celular debe tener 10 dígitos en total.";
+					mensajeCelular.style.color = "red";
+				} else {
+					mensajeCelular.textContent = "✅ Número de celular válido";
+					mensajeCelular.style.color = "green";
+				}
+			});
+
+
+		});
+
+		/**
+		 * Función para validar una cédula ecuatoriana
+		 */
+		function validarCedulaEcuatoriana(cedula) {
+			if (!/^\d{10}$/.test(cedula)) return false; // Verifica que sean solo 10 números
+
+			let provincia = parseInt(cedula.substring(0, 2));
+			let tercerDigito = parseInt(cedula.charAt(2));
+			let coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2]; // Para cálculo del dígito verificador
+			let suma = 0;
+
+			if (provincia < 1 || provincia > 24 || tercerDigito > 5) return false; // Reglas de provincia y tercer dígito
+
+			for (let i = 0; i < coeficientes.length; i++) {
+				let valor = parseInt(cedula.charAt(i)) * coeficientes[i];
+				suma += valor > 9 ? valor - 9 : valor; // Si es mayor a 9, restar 9
+			}
+
+			let verificador = (10 - (suma % 10)) % 10; // Cálculo del dígito verificador
+
+			return verificador === parseInt(cedula.charAt(9)); // Comparar con el último dígito
+		}
+
+
+
+		const provinciaSelect = document.getElementById('id_provincia');
+		const cantonSelect = document.getElementById('id_canton');
+		const parroquiaSelect = document.getElementById('id_parroquia');
+
+		provinciaSelect.addEventListener('change', () => {
+			cargarCantones(provinciaSelect.value);
+		});
+
+		cantonSelect.addEventListener('change', () => {
+			cargarParroquias(cantonSelect.value);
+		});
+
+		function cargarCantones(idProvincia) {
+			fetch(`/cantones/${idProvincia}`)
+				.then(response => response.json())
+				.then(data => {
+					cantonSelect.innerHTML = '<option value="" disabled selected>Seleccione un Cantón</option>';
+					data.forEach(canton => {
+						cantonSelect.innerHTML += `<option value="${canton.id_canton}">${canton.nombreCanton}</option>`;
+					});
+					cantonSelect.disabled = false;
+					parroquiaSelect.innerHTML = '<option value="" disabled selected>Seleccione una Parroquia</option>';
+					parroquiaSelect.disabled = true; // Deshabilitar hasta que se seleccione un cantón
+				});
+		}
+
+		function cargarParroquias(idCanton) {
+			fetch(`/parroquias/${idCanton}`)
+				.then(response => response.json())
+				.then(data => {
+					parroquiaSelect.innerHTML = '<option value="" disabled selected>Seleccione una Parroquia</option>';
+					data.forEach(parroquia => {
+						parroquiaSelect.innerHTML += `<option value="${parroquia.id_parroquia}">${parroquia.nombreParroquia}</option>`;
+					});
+					parroquiaSelect.disabled = false;
+				});
+		}
+
+
+		document.getElementById('buscarBtn').addEventListener('click', () => {
+			const cedula = cedulaInput.value.trim();
+			if (cedula.length === 10 && !isNaN(cedula)) {
+				buscarDatos(cedula);
+			} else {
+				alert('Por favor ingrese una cédula válida de 10 dígitos.');
+			}
+		});
+
+	</script>
+	</br>
+	<div th:replace="layout/layoutAdmin :: footercompacto"></div>
+</body>
+
+</html>

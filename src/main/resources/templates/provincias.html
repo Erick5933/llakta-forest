@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Llakta Forest</title>
+			<link rel="icon" href="/imagenes/logollakta.png" type="image/png">
+</head>
+<body>
+    <h1>Crear Nueva Provincia</h1>
+    <form action="/guardarProvincia" method="post">
+        <!-- Nombre de la Provincia -->
+        <label for="nombreProvincia">Nombre de la Provincia:</label>
+        <input type="text" name="nombreProvincia" id="nombreProvincia" required>
+        <br>
+        <button type="submit">Guardar</button>
+    </form>
+
+    <!-- Botón para listar provincias -->
+    <form action="/listarProvincias" method="get">
+        <button type="submit">Listar Provincias</button>
+    </form>
+</body>
+</html>

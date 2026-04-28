@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar con Bootstrap</title>
+
+    <!-- Agregar enlace al CSS de Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEJ6H7B9Ue3V8ADkz5v3pVJf6FQllmhnzHXK0fse5BziwO1v4VYa" crossorigin="anonymous">
+
+    <style>
+        /* Asegura que html y body ocupen toda la pantalla */
+        html, body {
+            height: 100%;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Fondo fijo y cubriendo toda la pantalla */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/imagenes/Fondo1.jpg');
+            background-size: cover;  /* El fondo cubre toda la pantalla */
+            background-position: center;
+            z-index: -1;  /* Asegura que el fondo quede detrás de los otros elementos */
+        }
+
+        /* Estilos para los enlaces del menú de navegación */
+        .navbar-nav .nav-link {
+            color: black !important;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none !important; /* Evita el subrayado */
+        }
+
+        /* Ajuste para que el menú de perfil no se desborde */
+        .dropdown-menu {
+            min-width: 200px;
+            right: 0;
+            left: auto;
+        }
+
+        /* Aseguramos que el fondo no sea cubierto por otros elementos */
+        .navbar, .container-fluid, .navbar-toggler-icon, .navbar-collapse {
+            position: relative;
+            z-index: 2;  /* Aseguramos que estos elementos queden encima del fondo */
+        }
+
+        /* Contenedor principal que envuelve todo el contenido */
+        .content-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;  /* Asegura que el contenido ocupe al menos toda la pantalla */
+            background-color: rgba(255, 255, 255, 0.8);  /* Fondo semi-transparente para el contenido */
+            padding: 20px;  /* Espaciado interno para el contenido */
+        }
+
+    </style>
+</head>
+<body>
+	<div th:fragment="menupatrocinador">
+		<!-- Menú de navegación con Bootstrap -->
+		<nav class="navbar navbar-expand-lg" style="background-color: #F5F4F0;">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="iniciopatrocinador">
+					<img src="/imagenes/logollakta.png" alt="Logo Principal" height="50">
+				</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+					aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarScroll">
+					<!-- Menús de Actividades, Registrar, Ver Lista -->
+					<ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll d-flex">
+						<!-- Menú Proyectos -->
+						<li class="nav-item">
+							<a href="/verproyectospatrocinador" id="navbarDropdown" role="button" aria-expanded="false" 
+								style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px; text-decoration: none;">
+								Proyectos
+							</a>
+						</li>
+
+						<!-- Espaciado entre elementos -->
+						<li class="nav-item ms-3">
+							<a href="/proyectosPatrocinador" id="navbarDropdown" role="button" aria-expanded="false" 
+							style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px; text-decoration: none;">
+								Avances del proyecto
+							</a>
+						</li>
+					</ul>
+
+					<!-- Menú Perfil -->
+					<ul class="navbar-nav">
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: rgb(0, 0, 0); font-weight: bold; font-size: 13px;">
+								Perfil
+							</a>
+							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilDropdown">
+								<li>
+																    <a class="dropdown-item" th:href="@{/editarPatrocinador/{idPatrocinador}(idPatrocinador=${id_patrocinador})}">Editar Perfil</a>
+																</li>
+								<li><a class="dropdown-item" href="/logout">Cerrar Sesión</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	
+	<!-- Aquí se coloca el fondo como fragmento -->
+		<div th:fragment="fondo">
+			<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100vh; background-image: url('/imagenes/Fondo1.jpg'); background-size: cover; background-position: center; background-attachment: fixed; z-index: -1;">
+			</div>
+		</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-pzjw8f+ua7Kw1TIq0BfiW6v7cXw4b0uEK5T5Xn6Pffqb5Oo/fBfXnPA0fqnsOg3h"
+		crossorigin="anonymous"></script>
+
+</body>
+
+</html>
