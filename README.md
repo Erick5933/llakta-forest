@@ -135,5 +135,5 @@ The long-term vision includes integrating autonomous drone surveys to automatica
 
 ## Authors
 
-Developed at Instituto Tecnológico del Azuay — Cuenca, Ecuador (2025)  
+Built in response to the 2024 El Cajas wildfires — Cuenca, Ecuador (2024)  
 Scrum Master & Lead Developer: Erick Chacón
